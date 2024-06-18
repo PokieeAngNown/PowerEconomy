@@ -1,0 +1,9 @@
+name: PoEconomy
+version: '${project.version}'
+main: cn.postudio.poeconomy.PoEconomy
+api-version: '1.20'
+author: [PokieeAKuno]
+depend: [PoCore]
+softdepend: [PlaceholderAPI]
+commands:
+  economy:
