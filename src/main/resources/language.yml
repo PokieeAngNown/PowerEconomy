@@ -1,4 +1,9 @@
-#%[Target] %[Economy]是内置变量 只能在/economy的指令 对应成功语言条目中使用
+##%[Target] %[Economy]是内置变量 只能在/economy的指令 对应成功语言条目中使用
+##语言文件支持分行设置 例如
+## InvalidCommand:
+##   - "-------"
+##   - "§f[§c!§f] 错误的指令"
+##   - "-------"
 InvalidCommand: "§f[§c!§f] 错误的指令"
 Economy:
   TypeNotFound: "§f[§c!§f] 没有找到该经济类型"
