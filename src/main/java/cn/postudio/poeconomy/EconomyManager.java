@@ -10,9 +10,11 @@ import java.util.*;
 
 public class EconomyManager {
     private static final List<String> EconomyTypeList = PoEconomy.getPlugin().getConfig().getStringList("EconomyType");
+    private static final List<String> PayableEconomyTypeList = PoEconomy.getPlugin().getConfig().getStringList("PayableEconomy");
     public static List<String> getEconomyTypeList(){
         return EconomyTypeList;
     }
+    public static List<String> getPayableEconomyTypeList(){return PayableEconomyTypeList;}
 
     private static FileConfiguration getPlayerData(@NotNull Player player){
         return PlayerDataManager.getPlayerData(player);
@@ -109,5 +111,9 @@ public class EconomyManager {
         } catch (IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean isPayable(String economyType){
+        return getPayableEconomyTypeList().contains(economyType);
     }
 }

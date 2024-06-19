@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class EconomyCommand implements CommandExecutor, TabCompleter {
 
@@ -45,7 +42,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
         double value;
         switch (args[2]){
             case "get" :
-                if (args.length > 3){
+                if (args.length != 3){
                     PluginMessageManager.sendMessageToPlayer(PoEconomy.getPlugin(), "InvalidCommand", sender);
                     break;
                 }
@@ -56,29 +53,54 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                 );
                 break;
             case "pay":
-                if (args.length > 4){
+                if (args.length != 4 ){
                     PluginMessageManager.sendMessageToPlayer(PoEconomy.getPlugin(), "InvalidCommand", sender);
                     break;
                 }
                 value = Double.parseDouble(args[3]);
                 if (sender.isOp()){
                     EconomyManager.OPPayTarget(target, economyType, value);
+                    sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                    PoEconomy.getPlugin()).getString("Economy.Pay"))
+                            .replace("%[Target]", target.getName())
+                            .replace("%[Economy]", value + economyType)
+                    );
+                    sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                    PoEconomy.getPlugin()).getString("Economy.Get"))
+                            .replace("%[Target]", target.getName())
+                            .replace("%[Economy]", EconomyManager.getEconomy(target, economyType) + economyType)
+                    );
                 }else{
-                    EconomyManager.senderPayTarget(sender, target, economyType, value);
+                    if (EconomyManager.isPayable(economyType)){
+                        if (target  == sender){
+                            sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                    PoEconomy.getPlugin()).getString("Economy.SelfPay")
+                            ));
+                            return true;
+                        }
+                        if (EconomyManager.getEconomy(sender, economyType) < 0){
+                            sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                    PoEconomy.getPlugin()).getString("Economy.NoSuchEconomy")
+                            ));
+                            return true;
+                        }
+                        EconomyManager.senderPayTarget(sender, target, economyType, value);
+                        sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                        PoEconomy.getPlugin()).getString("Economy.Pay"))
+                                .replace("%[Target]", target.getName())
+                                .replace("%[Economy]", value + economyType)
+                        );
+                    }else{
+                        sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
+                                PoEconomy.getPlugin()).getString("Economy.Unpayable"))
+                        );
+                        return true;
+                    }
+
                 }
-                sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
-                        PoEconomy.getPlugin()).getString("Economy.Pay"))
-                        .replace("%[Target]", target.getName())
-                        .replace("%[Economy]", value + economyType)
-                );
-                sender.sendMessage(Objects.requireNonNull(PluginMessageManager.getLang(
-                                PoEconomy.getPlugin()).getString("Economy.Get"))
-                        .replace("%[Target]", target.getName())
-                        .replace("%[Economy]", EconomyManager.getEconomy(target, economyType) + economyType)
-                );
                 break;
             case "take":
-                if (args.length > 4){
+                if (args.length != 4){
                     PluginMessageManager.sendMessageToPlayer(PoEconomy.getPlugin(), "InvalidCommand", sender);
                     break;
                 }
@@ -115,10 +137,18 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
             return list;
         }
         if (args.length == 2){
-            return EconomyManager.getEconomyTypeList();
+            if (commandSender.isOp()){
+                return EconomyManager.getEconomyTypeList();
+            }else{
+                return EconomyManager.getPayableEconomyTypeList();
+            }
         }
         if (args.length == 3){
-            return Arrays.asList("get", "pay", "take");
+            if (commandSender.isOp()){
+                return Arrays.asList("get", "pay", "take");
+            }else{
+                return Collections.singletonList("pay");
+            }
         }
         if (args.length >= 4){
             return list;

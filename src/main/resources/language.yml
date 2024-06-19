@@ -1,7 +1,10 @@
 #%[Target] %[Economy]是内置变量 只能在/economy的指令 对应成功语言条目中使用
-InvalidCommand: "§f[§c!§f]错误的指令"
+InvalidCommand: "§f[§c!§f] 错误的指令"
 Economy:
-  TypeNotFound: "§f[§c!§f]没有找到该经济类型"
+  TypeNotFound: "§f[§c!§f] 没有找到该经济类型"
+  NoSuchEconomy: "§f[§e!§f] 你没有那么多钱"
+  SelfPay: "§f[§e!§f] 不能给自己转账"
+  Unpayable: "§f[§e!§f] 这个经济类型是不可转账的"
   Get: "§f[§a!§f] %[Target] 拥有 %[Economy]"
   Pay: "§f[§a!§f] 已向 %[Target] 转账 %[Economy]"
   Take: "§f[§a!§f] 已向 %[Target] 获取 %[Economy]"
